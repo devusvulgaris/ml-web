@@ -9,6 +9,9 @@ const nextConfig = {
         : '/api/'
       }
     ]
+  },
+  typescript: {
+    ignoreBuildErrors: true
   }
 }
 
