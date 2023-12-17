@@ -4,9 +4,8 @@ import pickle
 import numpy as np
 from pydantic import BaseModel
 from typing import Sequence
-import json
 from skimage.transform import resize
-from skimage import io, color
+from skimage import io
 
 
 class Data(BaseModel):
@@ -61,7 +60,7 @@ async def predict(data: Data):
     prediction = model.predict(np_intensity_array)
 
     print("prediction", prediction)
-    return {"prediction": json.dumps(prediction.tolist())}
+    return {"prediction": prediction[0]}
 
 
 @app.post("/api/predict-image")
