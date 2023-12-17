@@ -1,10 +1,9 @@
-import Image from "next/image";
-import Canvas from "@/components/canvas";
+import DigitRecognition from "@/components/digitRecognition";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Canvas />
+    <main className="p-4 mx-auto container">
+      <DigitRecognition />
     </main>
   );
 }

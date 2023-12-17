@@ -1,10 +1,12 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 import pickle
 import numpy as np
 from pydantic import BaseModel
 from typing import Sequence
 import json
+from skimage.transform import resize
+from skimage import io, color
 
 
 class Data(BaseModel):
@@ -38,6 +40,9 @@ def healthcheck():
     return {"status": "success", "message": "Machine learning is not easy.."}
 
 
+lr_model = pickle.load(open("api/models/lr_model.pkl", "rb"))
+
+
 @app.post("/api/predict")
 async def predict(data: Data):
 
@@ -57,3 +62,29 @@ async def predict(data: Data):
 
     print("prediction", prediction)
     return {"prediction": json.dumps(prediction.tolist())}
+
+
+@app.post("/api/predict-image")
+async def predict(image: UploadFile):
+
+    bytes = await image.read()
+
+    image_array = io.imread(bytes, plugin='imageio')
+
+    gray_image = rgb2gray(image_array)
+
+    resized_image = resize(gray_image, (28, 28), anti_aliasing=True)
+
+    flattened_image = resized_image.flatten()
+
+    image_to_predict = flattened_image.reshape(1, -1)
+
+    prediction = lr_model.predict(image_to_predict)
+
+    print("prediction", prediction[0])
+
+    return {
+        "message": "Good",
+        "type": image.content_type,
+        "prediction": prediction[0]
+    }

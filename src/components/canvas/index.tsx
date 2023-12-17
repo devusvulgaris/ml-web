@@ -16,6 +16,8 @@ const Drawing: FC = (props) => {
     if (canvas) {
       const context = canvas.getContext("2d");
       if (context) {
+        context.fillStyle = "#fff";
+        context.fillRect(0, 0, 28, 28);
         context.fillStyle = "#000";
         ctxRef.current = context;
       }
@@ -53,6 +55,10 @@ const Drawing: FC = (props) => {
       ctxRef.current.canvas.width,
       ctxRef.current.canvas.height
     );
+
+    // set default bg
+    ctxRef.current.fillStyle = "#fff";
+    ctxRef.current.fillRect(0, 0, 28, 28);
   };
 
   const send = async () => {
@@ -75,7 +81,7 @@ const Drawing: FC = (props) => {
           height: imageData.height,
         })
       );
-      const response = await fetch("http://localhost:8000/api/predict", {
+      const response = await fetch("/api/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
